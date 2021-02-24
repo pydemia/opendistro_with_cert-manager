@@ -1,0 +1,261 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: odfs-elk-ca-issuer
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  selfSigned: {}
+---
+# elasticsearch-transport-certs
+# elk-transport-crt.pem, elk-transport-key.pem, elk-transport-root-ca.pem
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elasticsearch-ca-certs
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  secretName: elasticsearch-ca-certs
+  commonName: elasticsearch.svc.cluster.local
+  subject:
+    countries:
+    - "KR"
+    organizationalUnits:
+    - "example unit"
+    organizations:
+    - example org.
+    # localities:
+    # - ""
+    # provinces:
+    # - ""
+    # streetAddresses:
+    # - ""
+    # postalCodes:
+    # - ""
+    # serialNumber: ""
+  isCA: true
+  privateKey:
+    algorithm: RSA
+    # opendistro-security uses pkcs#8
+    encoding: PKCS8
+    size: 2048
+  dnsNames:
+  - elasticsearch.svc.cluster.local
+  - "*.elasticsearch.svc.cluster.local"
+  # Issuer references are always required.
+  issuerRef:
+    name: odfs-elk-ca-issuer
+    kind: Issuer
+---
+# apiVersion: cert-manager.io/v1
+# kind: Issuer
+# metadata:
+#   name: odfs-elk-issuer
+#   labels:
+#     app: elasticsearch-opendistro-es
+# spec:
+#   ca:
+#     secretName: elasticsearch-ca-certs
+# ---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: odfs-elk-issuer
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  ca:
+    secretName: elasticsearch-ca-certs
+---
+# elasticsearch-transport-certs
+# elk-transport-crt.pem, elk-transport-key.pem, elk-transport-root-ca.pem
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elasticsearch-transport-certs
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  secretName: elasticsearch-transport-certs
+  commonName: elasticsearch.svc.cluster.local
+  subject:
+    countries:
+    - "KR"
+    organizationalUnits:
+    - "example unit"
+    organizations:
+    - example org.
+    # localities:
+    # - ""
+    # provinces:
+    # - ""
+    # streetAddresses:
+    # - ""
+    # postalCodes:
+    # - ""
+    # serialNumber: ""
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    # opendistro-security uses pkcs#8
+    encoding: PKCS8
+    size: 2048
+  dnsNames:
+  - elasticsearch.svc.cluster.local
+  - "*.elasticsearch.svc.cluster.local"
+  # Issuer references are always required.
+  issuerRef:
+    name: odfs-elk-issuer
+    kind: Issuer
+---
+# elasticsearch-rest-certs
+# elk-rest-crt.pem, elk-rest-key.pem, elk-rest-root-ca.pem
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elasticsearch-rest-certs
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  secretName: elasticsearch-rest-certs
+  commonName: elasticsearch.svc.cluster.local
+  subject:
+    countries:
+    - "KR"
+    organizationalUnits:
+    - "example unit"
+    organizations:
+    - example org.
+    # localities:
+    # - ""
+    # provinces:
+    # - ""
+    # streetAddresses:
+    # - ""
+    # postalCodes:
+    # - ""
+    # serialNumber: ""
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    # opendistro-security uses pkcs#8
+    encoding: PKCS8
+    size: 2048
+  dnsNames:
+  - elasticsearch.svc.cluster.local
+  - "*.elasticsearch.svc.cluster.local"
+  # Issuer references are always required.
+  issuerRef:
+    name: odfs-elk-issuer
+    kind: Issuer
+---
+# elasticsearch-admin-certs
+# admin-crt.pem, admin-key.pem, admin-root-ca.pem
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elasticsearch-admin-certs
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  secretName: elasticsearch-admin-certs
+  commonName: elasticsearch.svc.cluster.local
+  subject:
+    countries:
+    - "KR"
+    organizationalUnits:
+    - "example unit"
+    organizations:
+    - example org.
+    # localities:
+    # - ""
+    # provinces:
+    # - ""
+    # streetAddresses:
+    # - ""
+    # postalCodes:
+    # - ""
+    # serialNumber: ""
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    # opendistro-security uses pkcs#8
+    encoding: PKCS8
+    size: 2048
+  dnsNames:
+  - elasticsearch.svc.cluster.local
+  - "*.elasticsearch.svc.cluster.local"
+  # Issuer references are always required.
+  issuerRef:
+    name: odfs-elk-issuer
+    kind: Issuer
+---
+# kibana-certs
+# kibana-crt.pem, kibana-key.pem, kibana-root-ca.pem
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kibana-certs
+  labels:
+    app: elasticsearch-opendistro-es
+spec:
+  secretName: kibana-certs
+  commonName: elasticsearch.svc.cluster.local
+  subject:
+    countries:
+    - "KR"
+    organizationalUnits:
+    - "example unit"
+    organizations:
+    - example org.
+    # localities:
+    # - ""
+    # provinces:
+    # - ""
+    # streetAddresses:
+    # - ""
+    # postalCodes:
+    # - ""
+    # serialNumber: ""
+  isCA: false
+  privateKey:
+    algorithm: RSA
+    # opendistro-security uses pkcs#8
+    encoding: PKCS8
+    size: 2048
+  dnsNames:
+  - elasticsearch.svc.cluster.local
+  - "*.elasticsearch.svc.cluster.local"
+  # Issuer references are always required.
+  issuerRef:
+    name: odfs-elk-issuer
+    kind: Issuer
+---
+# Resources below is to clean-up secrets easily
+# when you delete certificates with `kubectl delete -f <this-file>`.
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: elasticsearch-ca-certs
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: elasticsearch-admin-certs
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: elasticsearch-rest-certs
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: elasticsearch-transport-certs
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: kibana-certs
+# ---

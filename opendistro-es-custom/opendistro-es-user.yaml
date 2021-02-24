@@ -1,0 +1,13 @@
+# See https://github.com/opendistro-for-elasticsearch/security/blob/main/securityconfig/internal_users.yml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kibanaserver-user
+  labels:
+    app: elasticsearch-opendistro-es
+data:
+  username: a2liYW5hc2VydmVyCg==
+  password: a2liYW5hc2VydmVyCg==
+  # It must have a minimum length of [32] 32x4=128 (for max bytes: 4)
+  # example `date +%s | sha256sum | head -c 128 | base64; echo`
+  cookie: NDcyNzQ3MjhlNGQ5MzAwNDRkODYxNGRmYmU0Nzg3YWQ1YTcxMDdlYjgxMjVlOTEwNDFkYTcwMTI5YzM0NjUyMiAgLQo=
