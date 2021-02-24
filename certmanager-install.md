@@ -16,14 +16,14 @@ cd opendistro-es-custom
 
 ### Preparation
 
-##### Namespace
+#### Namespace
 
 ```bash
 NAMESPACE="elasticsearch"
 kubectl create -n ${NAMESPACE}
 ```
 
-##### Set ServiceAccount as a secret
+#### Set ServiceAccount as a secret
 
 ```bash
 kubectl -n ${NAMESPACE} apply -f opendistro-es-user.yaml
@@ -46,7 +46,7 @@ kubectl -n ${NAMESPACE} create secret generic kibanaserver-user \
 
 See [opendistro-for-elasticsearch/security](https://github.com/opendistro-for-elasticsearch/security/blob/main/securityconfig/internal_users.yml)
 
-##### Set `Issuers` and `Certificates` via cert-manager
+#### Set `Issuers` and `Certificates` via cert-manager
 
 We assume that you already set `cert-manager` in your cluster.
 If not, follow [cert-manager Installation Guide](https://cert-manager.io/docs/installation/).
@@ -84,7 +84,7 @@ Description:
   * `kibana-certs`: **PKCS#8** RSA key pair [`ca.crt`, `tls.crt`, `tls.key`]
 
 
-:warning: 
+:warning: Secret Requirements
 
 * It should be `encoding: PKCS8`
 * `spec.commonName` and `spec.subject` info should be managed and used when validate certificate chain. See [Describe values.yaml](#describe-value-yaml) below.
@@ -159,7 +159,7 @@ elasticsearch:
           subPath: {{ .Values.elasticsearch.ssl.transport.existingCertSecretCertSubPath }}
 ```
 
-* opendistro/security plugin uses **DN** for validate certificate chain.
+* opendistro/security plugin uses **DN** to validate certificate chain.
 Write your own info there, following [this](https://opendistro.github.io/for-elasticsearch-docs/docs/troubleshoot/tls/#validate-certificate-chain).
 
 ```yaml
@@ -332,7 +332,7 @@ kibana:
 
 * `--set kibana.config.elasticsearch.hosts="https://${RELEASE_NAME}-opendistro-es-client-service:9200"`
 
-See [this](https://github.com/opendistro-for-elasticsearch/opendistro-build/blob/main/helm/opendistro-es/templates/kibana/kibana-deployment.yaml#L56)
+See [this](https://github.com/opendistro-for-elasticsearch/opendistro-build/blob/main/helm/opendistro-es/templates/kibana/kibana-deployment.yaml#L56).  
 If helm release name is `elasticsearch`, helm template "opendistro-es.fullname" is `elasticsearch-opendistro-es`, then the hostname is `elasticsearch-opendistro-es-client-service`.
 
 We should set as the following:
