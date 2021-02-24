@@ -32,7 +32,9 @@ kibana:
   livenessProbe: []
   startupProbe: []
 
-  extraEnvs: []
+  extraEnvs:
+  - name: ELASTICSEARCH_HOSTS
+    value: https://elasticsearch-opendistro-es-client-service:9200
 
   extraVolumes: []
   # extraVolumes:
@@ -116,6 +118,7 @@ kibana:
     # If helm release name is `elasticsearch`, helm template "opendistro-es.fullname" is
     # `elasticsearch-opendistro-es`, then the hostname is `elasticsearch-opendistro-es-client-service`.
     # elasticsearch.hosts: https://elasticsearch-opendistro-es-client-service:9200
+    elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
     elasticsearch.requestTimeout: 360000
 
     logging.verbose: true
@@ -132,7 +135,7 @@ kibana:
     elasticsearch.password: ${ELASTICSEARCH_PASSWORD}
 
     opendistro_security.allow_client_certificates: true
-    elasticsearch.ssl.verificationMode: none # none # certificate
+    elasticsearch.ssl.verificationMode: none # none Valid values are "full", "certificate", and "none". Using "full" performs hostname verification, using "certificate" skips hostname verification, and using "none" skips verification entirely.
     elasticsearch.ssl.certificate: /usr/share/kibana/certs/elk-rest-crt.pem
     elasticsearch.ssl.key: /usr/share/kibana/certs/elk-rest-key.pem
     elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/certs/elk-rest-root-ca.pem"]
