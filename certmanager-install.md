@@ -54,14 +54,13 @@ We use `cert-manager=v1.1` in this article.
 
 ```bash
 $ kubectl -n ${NAMESPACE} apply -f opendistro-es-tls.yaml
-issuer.cert-manager.io/elk-ca-issuer created
+issuer.cert-manager.io/odfs-elk-ca-issuer created
 certificate.cert-manager.io/elasticsearch-ca-certs created
-issuer.cert-manager.io/elk-issuer created
+issuer.cert-manager.io/odfs-elk-issuer created
 certificate.cert-manager.io/elasticsearch-transport-certs created
 certificate.cert-manager.io/elasticsearch-rest-certs created
 certificate.cert-manager.io/elasticsearch-admin-certs created
 certificate.cert-manager.io/kibana-certs created
-secret/kibanaserver-user created
 ```
 
 Description:
@@ -93,14 +92,14 @@ Check your setup:
 
 ```bash
 $ kubectl -n ${NAMESPACE} get secrets
-NAME                                        TYPE                                  DATA   AGE
-default-token-xxxxx                         kubernetes.io/service-account-token   3      10m
-elasticsearch-admin-certs                   kubernetes.io/tls                     3      112m
-elasticsearch-ca-certs                      kubernetes.io/tls                     3      113m
-elasticsearch-rest-certs                    kubernetes.io/tls                     3      112m
-elasticsearch-transport-certs               kubernetes.io/tls                     3      112m
-kibana-certs                                kubernetes.io/tls                     3      112m
-kibanaserver-user                           Opaque                                3      112m
+NAME                            TYPE                                  DATA   AGE
+default-token-xxxxx             kubernetes.io/service-account-token   3      93s
+elasticsearch-admin-certs       kubernetes.io/tls                     3      71s
+elasticsearch-ca-certs          kubernetes.io/tls                     3      74s
+elasticsearch-rest-certs        kubernetes.io/tls                     3      71s
+elasticsearch-transport-certs   kubernetes.io/tls                     3      72s
+kibana-certs                    kubernetes.io/tls                     3      70s
+kibanaserver-user               Opaque                                3      83s
 ```
 
 ### Install via `helm`, with custom `values.yaml`
@@ -313,6 +312,7 @@ kibana:
     server.ssl.key: /usr/share/kibana/certs/kibana-key.pem
 
     opendistro_security.allow_client_certificates: true
+    elasticsearch.ssl.verificationMode: none  # certificate -> ConnectionError raised(It's weird!)
     elasticsearch.ssl.certificate: /usr/share/kibana/certs/elk-rest-crt.pem
     elasticsearch.ssl.key: /usr/share/kibana/certs/elk-rest-key.pem
     elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/certs/elk-rest-root-ca.pem"]
@@ -344,3 +344,35 @@ kibana:
 ```
 
 But this URL depends on what your helm `${RELEASE_NAME}` is, so we inject this in external way `"https://${RELEASE_NAME}-opendistro-es-client-service:9200"` to set as `kibana.config.elasticsearch.hosts: https://elasticsearch-opendistro-es-client-service:9200`.
+
+##### Further troubleshooting points
+
+`kibana.config.elasticsearch.ssl.verificationMode: none`: Why not working with `certificate`?
+
+* When set `certificate`: ConnectionError?
+
+```log
+│ {"type":"log","@timestamp":"2021-02-24T18:28:27Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:28Z","tags":["error","elasticsearch","data"],"pid":1,"message":"[ConnectionError]: self signed certificate"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:31Z","tags":["error","elasticsearch","data"],"pid":1,"message":"[ConnectionError]: self signed certificate"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:32Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:33Z","tags":["error","elasticsearch","data"],"pid":1,"message":"[ConnectionError]: self signed certificate"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:36Z","tags":["error","elasticsearch","data"],"pid":1,"message":"[ConnectionError]: self signed certificate"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:37Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"log","@timestamp":"2021-02-24T18:28:38Z","tags":["error","elasticsearch","data"],"pid":1,"message":"[ConnectionError]: self signed certificate"}
+```
+
+* When set `none`: Working!
+
+```log
+{"type":"log","@timestamp":"2021-02-24T18:32:58Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"ops","@timestamp":"2021-02-24T18:33:02Z","tags":[],"pid":1,"os":{"load":[3.65234375,2.638671875,2.5087890625],"mem":{"total":31562403840,"free":7950487552},"uptime":1758389},"
+│ {"type":"log","@timestamp":"2021-02-24T18:33:03Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"ops","@timestamp":"2021-02-24T18:33:07Z","tags":[],"pid":1,"os":{"load":[3.52001953125,2.6279296875,2.505859375],"mem":{"total":31562403840,"free":7945019392},"uptime":1758394
+│ {"type":"log","@timestamp":"2021-02-24T18:33:08Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"ops","@timestamp":"2021-02-24T18:33:12Z","tags":[],"pid":1,"os":{"load":[3.31787109375,2.6005859375,2.49755859375],"mem":{"total":31562403840,"free":7930966016},"uptime":17583
+│ {"type":"log","@timestamp":"2021-02-24T18:33:13Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"ops","@timestamp":"2021-02-24T18:33:17Z","tags":[],"pid":1,"os":{"load":[3.37255859375,2.6240234375,2.505859375],"mem":{"total":31562403840,"free":7935848448},"uptime":1758404
+│ {"type":"log","@timestamp":"2021-02-24T18:33:18Z","tags":["debug","metrics"],"pid":1,"message":"Refreshing metrics"}
+│ {"type":"ops","@timestamp":"2021-02-24T18:33:22Z","tags":[],"pid":1,"os":{"load":[3.4228515625,2.64697265625,2.51416015625],"mem":{"total":31562403840,"free":7928467456},"uptime":17584
+```

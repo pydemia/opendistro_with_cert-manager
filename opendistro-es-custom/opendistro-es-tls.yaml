@@ -272,8 +272,8 @@ spec:
     name: odfs-elk-issuer
     kind: Issuer
 ---
-# Resources below is to clean-up secrets easily
-# when you delete certificates with `kubectl delete -f <this-file>`.
+# # Resources below is to clean-up secrets easily
+# # when you delete certificates with `kubectl delete -f <this-file>`.
 # apiVersion: v1
 # kind: Secret
 # metadata:

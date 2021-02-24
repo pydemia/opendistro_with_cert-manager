@@ -132,6 +132,7 @@ kibana:
     elasticsearch.password: ${ELASTICSEARCH_PASSWORD}
 
     opendistro_security.allow_client_certificates: true
+    elasticsearch.ssl.verificationMode: none # none # certificate
     elasticsearch.ssl.certificate: /usr/share/kibana/certs/elk-rest-crt.pem
     elasticsearch.ssl.key: /usr/share/kibana/certs/elk-rest-key.pem
     elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/certs/elk-rest-root-ca.pem"]
@@ -143,6 +144,13 @@ kibana:
     opendistro_security.multitenancy.tenants.enable_global: false
     opendistro_security.readonly_mode.roles: ["kibana_read_only"]
     elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
+
+    # monitoring.ui.elasticsearch.ssl.verificationMode: certificate
+    # monitoring.ui.elasticsearch.ssl.certificate: /usr/share/kibana/certs/elk-rest-crt.pem
+    # monitoring.ui.elasticsearch.ssl.key: /usr/share/kibana/certs/elk-rest-key.pem
+    # monitoring.ui.elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/certs/elk-rest-root-ca.pem"]
+    # monitoring.ui.elasticsearch.username: ${ELASTICSEARCH_USERNAME}
+    # monitoring.ui.elasticsearch.password: ${ELASTICSEARCH_PASSWORD}
 
   ingress:
     ## Set to true to enable ingress record generation
