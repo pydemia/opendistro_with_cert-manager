@@ -1,0 +1,180 @@
+# Copyright 2019 Viasat, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# A copy of the License is located at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed
+# on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+# express or implied. See the License for the specific language governing
+# permissions and limitations under the License.
+
+kibana:
+  enabled: true
+  image: amazon/opendistro-for-elasticsearch-kibana
+  imageTag: 1.13.0
+  ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
+  ## Default to "Always".
+  imagePullPolicy: ""
+  replicas: 1
+  port: 5601
+  externalPort: 443
+  resources: {}
+  #  limits:
+  #    cpu: 2500m
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 512Mi
+  readinessProbe: []
+  livenessProbe: []
+  startupProbe: []
+
+  extraEnvs: []
+
+  extraVolumes: []
+  # extraVolumes:
+  # - name: kibana-certs
+  #   secret:
+  #     secretName: kibana-certs
+  #     items:
+  #     - key: tls.crt
+  #       path: kibana-crt.pem
+  #     - key: tls.key
+  #       path: kibana-key.pem
+  #     - key: ca.crt
+  #       path: kibana-root-ca.pem
+  # - name: elasticsearch-rest-certs
+  #   secret:
+  #     secretName: elasticsearch-rest-certs
+  #     items:
+  #     - key: tls.crt
+  #       path: elk-rest-crt.pem
+  #     - key: tls.key
+  #       path: elk-rest-key.pem
+  #     - key: ca.crt
+  #       path: elk-rest-root-ca.pem
+
+  extraVolumeMounts: []
+  # extraVolumeMounts:
+  # - name: kibana-certs
+  #   mountPath: /usr/share/kibana/certs
+  #   readOnly: true
+  # - name: elasticsearch-rest-certs
+  #   mountPath: /usr/share/kibana/certs
+  #   readOnly: true
+
+  extraInitContainers: []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+  extraContainers: []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+  serviceAccount:
+    ## Specifies whether a ServiceAccount should be created
+    create: true
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    # name:
+    name: opendistro  # -> opendistro-kibana
+
+  elasticsearchAccount:
+    secret: kibanaserver-user
+    keyPassphrase:
+      enabled: false
+
+  ssl:
+    kibana:
+      enabled: true
+      existingCertSecret: kibana-certs
+      existingCertSecretCertSubPath: tls.crt  # kibana-crt.pem
+      existingCertSecretKeySubPath: tls.key   # kibana-key.pem
+      existingCertSecretRootCASubPath: ca.crt # kibana-root-ca.pem
+    elasticsearch:
+      enabled: true
+      existingCertSecret: elasticsearch-rest-certs
+      existingCertSecretCertSubPath: tls.crt  # elk-rest-crt.pem
+      existingCertSecretKeySubPath: tls.key   # elk-rest-key.pem
+      existingCertSecretRootCASubPath: ca.crt # elk-rest-root-ca.pem
+
+
+  configDirectory: "/usr/share/kibana/config"
+  certsDirectory: "/usr/share/kibana/certs"
+
+  config:
+    
+    server.name: kibana
+    server.host: "0"
+
+    # See https://github.com/opendistro-for-elasticsearch/opendistro-build/blob/main/helm/opendistro-es/templates/kibana/kibana-deployment.yaml#L56
+    # If helm release name is `elasticsearch`, helm template "opendistro-es.fullname" is
+    # `elasticsearch-opendistro-es`, then the hostname is `elasticsearch-opendistro-es-client-service`.
+    # elasticsearch.hosts: https://elasticsearch-opendistro-es-client-service:9200
+    elasticsearch.requestTimeout: 360000
+
+    logging.verbose: true
+
+    # Kibana TLS Config
+    server.ssl.enabled: true
+    server.ssl.certificate: /usr/share/kibana/certs/kibana-crt.pem
+    server.ssl.key: /usr/share/kibana/certs/kibana-key.pem
+
+    opendistro_security.cookie.secure: true
+    opendistro_security.cookie.password: ${COOKIE_PASS}
+
+    elasticsearch.username: ${ELASTICSEARCH_USERNAME}
+    elasticsearch.password: ${ELASTICSEARCH_PASSWORD}
+
+    opendistro_security.allow_client_certificates: true
+    elasticsearch.ssl.certificate: /usr/share/kibana/certs/elk-rest-crt.pem
+    elasticsearch.ssl.key: /usr/share/kibana/certs/elk-rest-key.pem
+    elasticsearch.ssl.certificateAuthorities: ["/usr/share/kibana/certs/elk-rest-root-ca.pem"]
+
+    # Multitenancy with global/private tenants disabled,
+    # set to both to true if you want them to be available.
+    opendistro_security.multitenancy.enabled: true
+    opendistro_security.multitenancy.tenants.enable_private: false
+    opendistro_security.multitenancy.tenants.enable_global: false
+    opendistro_security.readonly_mode.roles: ["kibana_read_only"]
+    elasticsearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
+
+  ingress:
+    ## Set to true to enable ingress record generation
+    enabled: false
+    annotations: {}
+    #  kubernetes.io/ingress.class: nginx
+    #  kubernetes.io/tls-acme: "true"
+    labels: {}
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  service:
+    type: ClusterIP
+    annotations: {}
+
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  affinity: {}
+
+
+  podAnnotations: {}
