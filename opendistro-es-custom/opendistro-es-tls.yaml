@@ -43,6 +43,14 @@ spec:
   dnsNames:
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
+  - "*.elasticsearch"
+  - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
+  - elasticsearch-opendistro-es-client-service
+  - elasticsearch-opendistro-es-data-svc
+  - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
+  - "*.example.com"
   # Issuer references are always required.
   issuerRef:
     name: odfs-elk-ca-issuer
@@ -104,6 +112,14 @@ spec:
   dnsNames:
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
+  - "*.elasticsearch"
+  - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
+  - elasticsearch-opendistro-es-client-service
+  - elasticsearch-opendistro-es-data-svc
+  - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
+  - "*.example.com"
   # Issuer references are always required.
   issuerRef:
     name: odfs-elk-issuer
@@ -145,6 +161,14 @@ spec:
   dnsNames:
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
+  - "*.elasticsearch"
+  - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
+  - elasticsearch-opendistro-es-client-service
+  - elasticsearch-opendistro-es-data-svc
+  - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
+  - "*.example.com"
   # Issuer references are always required.
   issuerRef:
     name: odfs-elk-issuer
@@ -186,6 +210,14 @@ spec:
   dnsNames:
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
+  - "*.elasticsearch"
+  - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
+  - elasticsearch-opendistro-es-client-service
+  - elasticsearch-opendistro-es-data-svc
+  - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
+  - "*.example.com"
   # Issuer references are always required.
   issuerRef:
     name: odfs-elk-issuer
@@ -227,6 +259,14 @@ spec:
   dnsNames:
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
+  - "*.elasticsearch"
+  - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
+  - elasticsearch-opendistro-es-client-service
+  - elasticsearch-opendistro-es-data-svc
+  - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
+  - "*.example.com"
   # Issuer references are always required.
   issuerRef:
     name: odfs-elk-issuer
