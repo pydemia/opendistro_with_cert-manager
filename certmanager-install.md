@@ -108,13 +108,18 @@ kibanaserver-user               Opaque                                3      83s
   * `opendistro-es.yaml`
   * `opendistro-kibana.yaml`
 
+* For `bash` and `zsh`: ()
+
 ```bash
 RELEASE_NAME="elasticsearch"
 helm install ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
   --namespace=${NAMESPACE} \
   --values=opendistro-es.yaml \
   --values=opendistro-kibana.yaml \
-  --set kibana.config.elasticsearch.hosts="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
+  --set kibana.extraEnvs\[0\].name="ELASTICSEARCH_HOSTS" \
+  --set kibana.extraEnvs\[0\].value="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
+
+# For zsh, use `\[0\]` instead of `[0]` avoid this error: zsh: no matches found: kibana.extraEnvs[0].name=...
 
 # helm -n ${NAMESPACE} uninstall ${RELEASE_NAME}
 ```
@@ -328,22 +333,18 @@ kibana:
   configDirectory: "/usr/share/kibana/config"
 ```
 
-##### extra setting
+* Set extraEnv `ELASTICSEARCH_HOSTS` in kibana
 
-* `--set kibana.config.elasticsearch.hosts="https://${RELEASE_NAME}-opendistro-es-client-service:9200"`
-
-See [this](https://github.com/opendistro-for-elasticsearch/opendistro-build/blob/main/helm/opendistro-es/templates/kibana/kibana-deployment.yaml#L56).  
-If helm release name is `elasticsearch`, helm template "opendistro-es.fullname" is `elasticsearch-opendistro-es`, then the hostname is `elasticsearch-opendistro-es-client-service`.
-
-We should set as the following:
-
-```yaml
-kibana:
-  config:
-    elasticsearch.hosts: https://elasticsearch-opendistro-es-client-service:9200
+```bash
+  --set kibana.extraEnvs[0].name="ELASTICSEARCH_HOSTS" \
+  --set kibana.extraEnvs[0].value="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
 ```
 
-But this URL depends on what your helm `${RELEASE_NAME}` is, so we inject this in external way `"https://${RELEASE_NAME}-opendistro-es-client-service:9200"` to set as `kibana.config.elasticsearch.hosts: https://elasticsearch-opendistro-es-client-service:9200`.
+See [this](https://github.com/opendistro-for-elasticsearch/opendistro-build/blob/main/helm/opendistro-es/templates/kibana/kibana-deployment.yaml#L56).  
+As it said, if no custom configuration provided, default to internal DNS.  
+It means if helm release name is `elasticsearch`, helm template "opendistro-es.fullname" is `elasticsearch-opendistro-es`, then the hostname would be `elasticsearch-opendistro-es-client-service`.
+
+This URL depends on what your helm `${RELEASE_NAME}` is, so we should inject this in external way `"https://${RELEASE_NAME}-opendistro-es-client-service:9200"`.
 
 ##### Further troubleshooting points
 
