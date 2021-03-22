@@ -1,0 +1,4 @@
+[submodule "opendistro-build"]
+	path = opendistro-build
+	url = https://github.com/opendistro-for-elasticsearch/opendistro-build
+	branch = opendistro-1.13
