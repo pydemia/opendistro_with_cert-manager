@@ -122,6 +122,14 @@ helm install ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
 # For zsh, use `\[0\]` instead of `[0]` avoid this error: zsh: no matches found: kibana.extraEnvs[0].name=...
 
 # helm -n ${NAMESPACE} uninstall ${RELEASE_NAME}
+
+RELEASE_NAME="elasticsearch"
+helm upgrade ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
+  --namespace=${NAMESPACE} \
+  --values=opendistro-es.yaml \
+  --values=opendistro-kibana.yaml \
+  --set kibana.extraEnvs\[0\].name="ELASTICSEARCH_HOSTS" \
+  --set kibana.extraEnvs\[0\].value="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
 ```
 
 #### Describe `values.yaml`

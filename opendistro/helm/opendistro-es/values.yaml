@@ -11,6 +11,133 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
+kibana:
+  enabled: true
+  image: amazon/opendistro-for-elasticsearch-kibana
+  imageTag: 1.13.0
+  ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
+  ## Default to "Always".
+  imagePullPolicy: ""
+  replicas: 1
+  port: 5601
+  externalPort: 443
+  resources: {}
+  #  limits:
+  #    cpu: 2500m
+  #    memory: 2Gi
+  #  requests:
+  #    cpu: 500m
+  #    memory: 512Mi
+  readinessProbe: []
+  livenessProbe: []
+  startupProbe: []
+
+  elasticsearchAccount:
+    secret: ""
+    keyPassphrase:
+      enabled: false
+
+  extraEnvs: []
+
+  extraVolumes: []
+  # - name: extras
+  #   emptyDir: {}
+
+  extraVolumeMounts: []
+  # - name: extras
+  #   mountPath: /usr/share/extras
+  #   readOnly: true
+
+  extraInitContainers: []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+  extraContainers: []
+  # - name: do-something
+  #   image: busybox
+  #   command: ['do', 'something']
+
+  ssl:
+    kibana:
+      enabled: false
+      existingCertSecret:
+      existingCertSecretCertSubPath: kibana-crt.pem
+      existingCertSecretKeySubPath: kibana-key.pem
+      existingCertSecretRootCASubPath: kibana-root-ca.pem
+    elasticsearch:
+      enabled: false
+      existingCertSecret:
+      existingCertSecretCertSubPath: elk-rest-crt.pem
+      existingCertSecretKeySubPath: elk-rest-key.pem
+      existingCertSecretRootCASubPath: elk-rest-root-ca.pem
+
+
+
+  configDirectory: "/usr/share/kibana/config"
+  certsDirectory: "/usr/share/kibana/certs"
+
+  ingress:
+    ## Set to true to enable ingress record generation
+    enabled: false
+    annotations: {}
+    #  kubernetes.io/ingress.class: nginx
+    #  kubernetes.io/tls-acme: "true"
+    labels: {}
+    path: /
+    hosts:
+      - chart-example.local
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+  service:
+    type: ClusterIP
+    annotations: {}
+
+  config: {}
+    ## Default Kibana configuration from kibana-docker.
+    # server.name: kibana
+    # server.host: "0"
+
+    ## Replace with Elasticsearch DNS name picked during Service deployment
+    # elasticsearch.hosts: ${ELASTIC_URL}
+    # elasticsearch.requestTimeout: 360000
+
+    ## Kibana TLS Config
+    # server.ssl.enabled: true
+    # server.ssl.key: /usr/share/kibana/certs/kibana-key.pem
+    # server.ssl.certificate: /usr/share/kibana/certs/kibana-crt.pem
+    # elasticsearch.ssl.certificateAuthorities: /usr/share/kibana/certs/kibana-root-ca.pem
+
+    # opendistro_security.cookie.secure: true
+    # opendistro_security.cookie.password: ${COOKIE_PASS}
+
+
+
+  ## Node labels for pod assignment
+  ## ref: https://kubernetes.io/docs/user-guide/node-selection/
+  #
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  affinity: {}
+
+  serviceAccount:
+    ## Specifies whether a ServiceAccount should be created
+    create: true
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    name:
+
+  podAnnotations: {}
+
+
 global:
   clusterName: elasticsearch
 
@@ -42,12 +169,6 @@ elasticsearch:
     rolesSecret:
     rolesMappingSecret:
     tenantsSecret:
-    # actionGroupsSecret: "action-groups-config"
-    # configSecret: "security-config"
-    # internalUsersSecret: "internal-users-config"
-    # rolesSecret: "roles-config"
-    # rolesMappingSecret: "roles-mapping-config"
-    # tenantsSecret: "tenants-config"
     #The following option simplifies securityConfig by using a single secret and specifying the respective secrets in the corresponding files instead of creating different secrets for config,internal users, roles, roles mapping and tenants
     #Note that this is an alternative to the above secrets and shouldn't be used if the above secrets are used
     config:
@@ -67,48 +188,12 @@ elasticsearch:
   #   command: ['do', 'something']
 
   extraVolumes: []
-  # extraVolumes:
-  # - name: elasticsearch-transport-certs
-  #   secret:
-  #     secretName: elasticsearch-transport-certs
-  #     items:
-  #     - key: tls.crt
-  #       path: elk-transport-crt.pem
-  #     - key: tls.key
-  #       path: elk-transport-key.pem
-  #     - key: ca.crt
-  #       path: elk-transport-root-ca.pem
-  # - name: elasticsearch-rest-certs
-  #   secret:
-  #     secretName: elasticsearch-rest-certs
-  #     items:
-  #     - key: tls.crt
-  #       path: elk-rest-crt.pem
-  #     - key: tls.key
-  #       path: elk-rest-key.pem
-  #     - key: ca.crt
-  #       path: elk-rest-root-ca.pem
-  # - name: elasticsearch-admin-certs
-  #   secret:
-  #     secretName: elasticsearch-admin-certs
-  #     items:
-  #     - key: tls.crt
-  #       path: admin-crt.pem
-  #     - key: tls.key
-  #       path: admin-key.pem
-  #     - key: ca.crt
-  #       path: admin-root-ca.pem
+  # - name: extras
+  #   emptyDir: {}
 
   extraVolumeMounts: []
-  # extraVolumeMounts:
-  # - name: elasticsearch-transport-certs
-  #   mountPath: /usr/share/elasticsearch/config
-  #   readOnly: true
-  # - name: elasticsearch-rest-certs
-  #   mountPath: /usr/share/elasticsearch/config
-  #   readOnly: true
-  # - name: elasticsearch-admin-certs
-  #   mountPath: /usr/share/elasticsearch/config
+  # - name: extras
+  #   mountPath: /usr/share/extras
   #   readOnly: true
 
   initContainer:
@@ -123,138 +208,26 @@ elasticsearch:
   ssl:
     ## TLS is mandatory for the transport layer and can not be disabled
     transport:
-      existingCertSecret: elasticsearch-transport-certs
-      existingCertSecretCertSubPath: tls.crt  # elk-transport-crt.pem
-      existingCertSecretKeySubPath: tls.key   # elk-transport-key.pem
-      existingCertSecretRootCASubPath: ca.crt # elk-transport-root-ca.pem
+      existingCertSecret:
+      existingCertSecretCertSubPath: elk-transport-crt.pem
+      existingCertSecretKeySubPath: elk-transport-key.pem
+      existingCertSecretRootCASubPath: elk-transport-root-ca.pem
     rest:
-      enabled: true
-      existingCertSecret: elasticsearch-rest-certs
-      existingCertSecretCertSubPath: tls.crt  # elk-rest-crt.pem
-      existingCertSecretKeySubPath: tls.key   # elk-rest-key.pem
-      existingCertSecretRootCASubPath: ca.crt # elk-rest-root-ca.pem
+      enabled: false
+      existingCertSecret:
+      existingCertSecretCertSubPath: elk-rest-crt.pem
+      existingCertSecretKeySubPath: elk-rest-key.pem
+      existingCertSecretRootCASubPath: elk-rest-root-ca.pem
     admin:
-      enabled: true
-      existingCertSecret: elasticsearch-admin-certs
-      existingCertSecretCertSubPath: tls.crt  # admin-crt.pem
-      existingCertSecretKeySubPath: tls.key   # admin-key.pem
-      existingCertSecretRootCASubPath: ca.crt # admin-root-ca.pem
-
-  config:
-    cluster:
-      name: ${cluster.name}
-    node:
-      master: ${node.master}
-      data: ${node.data}
-      name: ${node.name}
-      ingest: ${node.ingest}
-      max_local_storage_nodes: 3
-      attr.box_type: hot
-
-    processors: ${PROCESSORS:1}
-
-    network.host: ${network.host} # 0.0.0.0 # ${NETWORK_HOST}
-
-    # Unknown setting for v1.13: thread_pool.bulk.queue_size
-    # log: java.lang.IllegalArgumentException: unknown setting [thread_pool.bulk.queue_size] did you mean any of [thread_pool.get.queue_size, thread_pool.write.queue_size, thread_pool.analyze.queue_size, thread_pool.search.queue_size, thread_pool.listener.queue_size]?
-    # thread_pool:
-    #   get.queue_size:
-    #   analyze.queue_size:
-    #   search.que_size:
-    #   listener.queue_size:
-
-    # discovery:
-    #   zen:
-    #     ping.unicast.hosts: ${DISCOVERY_SERVICE}
-    #     minimum_master_nodes: ${NUMBER_OF_MASTERS}
-
-    # TLS Configuration Transport Layer
-    opendistro_security.ssl.transport.pemcert_filepath: elk-transport-crt.pem
-    opendistro_security.ssl.transport.pemkey_filepath: elk-transport-key.pem
-    opendistro_security.ssl.transport.pemtrustedcas_filepath: elk-transport-root-ca.pem
-    opendistro_security.ssl.transport.enforce_hostname_verification: false
-    # opendistro_security.ssl.transport.truststore_filepath: opendistro-es.truststore
-
-    # TLS Configuration REST Layer
-    opendistro_security.ssl.http.enabled: true
-    opendistro_security.ssl.http.pemcert_filepath: elk-rest-crt.pem
-    opendistro_security.ssl.http.pemkey_filepath: elk-rest-key.pem
-    opendistro_security.ssl.http.pemtrustedcas_filepath: elk-rest-root-ca.pem
-
-    opendistro_security.allow_unsafe_democertificates: false
-    opendistro_security.allow_default_init_securityindex: true
-
-    # See https://opendistro.github.io/for-elasticsearch-docs/docs/troubleshoot/tls/#validate-certificate-chain
-    opendistro_security.authcz.admin_dn:
-    - 'CN=elasticsearch.svc.cluster.local,OU=example unit,O=example org.,C=KR'
-    - 'CN=*.elasticsearch'
-    - 'CN=*.elasticsearch.svc'
-    - 'CN=*.svc.cluster.local'
-    - 'CN=elasticsearch-opendistro-es-client-service'
-    - 'CN=elasticsearch-opendistro-es-data-svc'
-    - 'CN=elasticsearch-opendistro-es-discovery'
-    - 'CN=elasticsearch-opendistro-es-kibana-svc'
-    - 'CN=*.example.com'
-    - 'CN=*.example.com,OU=example unit,O=example org.,C=KR'
-    - 'CN=odfe-cluster*'
-    - 'CN=elasticsearch*'
-    - '/CN=.*regex/'
-    opendistro_security.nodes_dn:
-    - 'CN=*.elasticsearch.svc.cluster.local,OU=example unit,O=example org.,C=KR'
-    - 'CN=*.elasticsearch'
-    - 'CN=*.elasticsearch.svc'
-    - 'CN=*.svc.cluster.local'
-    - 'CN=elasticsearch-opendistro-es-client-service'
-    - 'CN=elasticsearch-opendistro-es-data-svc'
-    - 'CN=elasticsearch-opendistro-es-discovery'
-    - 'CN=elasticsearch-opendistro-es-kibana-svc'
-    - 'CN=*.example.com'
-    - 'CN=*.example.com,OU=example unit,O=example org.,C=KR'
-    - 'CN=odfe-cluster*'
-    - 'CN=elasticsearch*'
-    - '/CN=.*regex/'
-
-    opendistro_security.enable_snapshot_restore_privilege: true
-    opendistro_security.check_snapshot_restore_write_privileges: true
-    opendistro_security.restapi.roles_enabled: ["all_access", "security_rest_api_access"]
-    opendistro_security.system_indices.enabled: true
-    opendistro_security.system_indices.indices: [".opendistro-alerting-config", ".opendistro-alerting-alert*", ".opendistro-anomaly-results*", ".opendistro-anomaly-detector*", ".opendistro-anomaly-checkpoints", ".opendistro-anomaly-detection-state", ".opendistro-reports-*", ".opendistro-notifications-*", ".opendistro-notebooks", ".opendistro-asynchronous-search-response*"]
-    cluster.routing.allocation.disk.threshold_enabled: false
-    
-    # See https://opendistro.github.io/for-elasticsearch-docs/docs/security/audit-logs/storage-types/
-    opendistro_security.audit.type: internal_elasticsearch
-    opendistro_security.audit.config.disabled_rest_categories: NONE
-    opendistro_security.audit.config.disabled_transport_categories: NONE
-
-    http:
-      # enabled: true # ${HTTP_ENABLE}
-      compression: true
-
-    path:
-      data: /usr/share/elasticsearch/data
-      logs: /usr/share/elasticsearch/logs
-
-  configDirectory: /usr/share/elasticsearch/config
-
-  serviceAccount:
-    ## Specifies whether a ServiceAccount should be created
-    create: true
-    ## The name of the ServiceAccount to use.
-    ## If not set and create is true, a name is generated using the fullname template
-    # name: 
-    name: opendistro  # -> opendistro-es
-
-  transportKeyPassphrase:
-    enabled: false
-    passPhrase:
-
-  sslKeyPassphrase:
-    enabled: false
-    passPhrase:
+      enabled: false
+      existingCertSecret:
+      existingCertSecretCertSubPath: admin-crt.pem
+      existingCertSecretKeySubPath: admin-key.pem
+      existingCertSecretRootCASubPath: admin-root-ca.pem
 
   master:
     enabled: true
-    replicas: 3
+    replicas: 1
     updateStrategy: "RollingUpdate"
 
     ## Enable persistence using Persistent Volume Claims
@@ -283,7 +256,7 @@ elasticsearch:
       # storageClass: "-"
       accessModes:
         - ReadWriteOnce
-      size: 1Ti
+      size: 8Gi
       annotations: {}
 
     resources: {}
@@ -331,7 +304,7 @@ elasticsearch:
     ## Enables dedicated statefulset for data. Otherwise master nodes as data storage
     dedicatedPod:
       enabled: true
-    replicas: 3
+    replicas: 1
     updateStrategy: "RollingUpdate"
 
     ## Enable persistence using Persistent Volume Claims
@@ -417,7 +390,7 @@ elasticsearch:
 
         # # Annotation to create internal only ELB
         # service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
-    replicas: 3
+    replicas: 1
     javaOpts: "-Xms512m -Xmx512m"
     ingress:
       ## Set to true to enable ingress record generation
@@ -467,6 +440,57 @@ elasticsearch:
     #              role: client
     podAnnotations: {}
 
+  config: {}
+    ## Example Config
+    # opendistro_security.allow_unsafe_democertificates: false
+    # opendistro_security.allow_default_init_securityindex: true
+    # opendistro_security.audit.type: internal_elasticsearch
+    # opendistro_security.enable_snapshot_restore_privilege: true
+    # opendistro_security.check_snapshot_restore_write_privileges: true
+    # cluster.routing.allocation.disk.threshold_enabled: false
+    # opendistro_security.audit.config.disabled_rest_categories: NONE
+    # opendistro_security.audit.config.disabled_transport_categories: NONE
+    # cluster:
+    #   name: ${CLUSTER_NAME}
+    # node:
+    #   master: ${NODE_MASTER}
+    #   data: ${NODE_DATA}
+    #   name: ${NODE_NAME}
+    #   ingest: ${NODE_INGEST}
+    #   max_local_storage_nodes: 1
+    #   attr.box_type: hot
+
+    # processors: ${PROCESSORS:1}
+
+    # network.host: ${NETWORK_HOST}
+
+    # thread_pool.bulk.queue_size: 800
+
+    # path:
+    #   data: /usr/share/elasticsearch/data
+    #   logs: /usr/share/elasticsearch/logs
+
+    # http:
+    #   enabled: ${HTTP_ENABLE}
+    #   compression: true
+
+    # discovery:
+    #   zen:
+    #     ping.unicast.hosts: ${DISCOVERY_SERVICE}
+    #     minimum_master_nodes: ${NUMBER_OF_MASTERS}
+
+    # # TLS Configuration Transport Layer
+    # opendistro_security.ssl.transport.pemcert_filepath: elk-transport-crt.pem
+    # opendistro_security.ssl.transport.pemkey_filepath: elk-transport-key.pem
+    # opendistro_security.ssl.transport.pemtrustedcas_filepath: elk-transport-root-ca.pem
+    # opendistro_security.ssl.transport.enforce_hostname_verification: false
+
+    # # TLS Configuration REST Layer
+    # opendistro_security.ssl.http.enabled: true
+    # opendistro_security.ssl.http.pemcert_filepath: elk-rest-crt.pem
+    # opendistro_security.ssl.http.pemkey_filepath: elk-rest-key.pem
+    # opendistro_security.ssl.http.pemtrustedcas_filepath: elk-rest-root-ca.pem
+
   log4jConfig: ""
 
   loggingConfig:
@@ -486,6 +510,14 @@ elasticsearch:
           type: consolePattern
           conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
 
+  transportKeyPassphrase:
+    enabled: false
+    passPhrase:
+
+  sslKeyPassphrase:
+    enabled: false
+    passPhrase:
+
   maxMapCount: 262144
 
   image: amazon/opendistro-for-elasticsearch
@@ -493,6 +525,15 @@ elasticsearch:
   ## Specifies the image pull policy. Can be "Always" or "IfNotPresent" or "Never".
   ## Default to "Always".
   imagePullPolicy: ""
+
+  configDirectory: /usr/share/elasticsearch/config
+
+  serviceAccount:
+    ## Specifies whether a ServiceAccount should be created
+    create: true
+    ## The name of the ServiceAccount to use.
+    ## If not set and create is true, a name is generated using the fullname template
+    name:
 
 
 nameOverride: ""
