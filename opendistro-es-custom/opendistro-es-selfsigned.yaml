@@ -126,19 +126,19 @@ elasticsearch:
       existingCertSecret: elasticsearch-transport-certs
       existingCertSecretCertSubPath: tls.crt  # elk-transport-crt.pem
       existingCertSecretKeySubPath: tls.key   # elk-transport-key.pem
-      existingCertSecretRootCASubPath: tls.crt # elk-transport-root-ca.pem
+      existingCertSecretRootCASubPath: ca.crt # elk-transport-root-ca.pem
     rest:
       enabled: true
       existingCertSecret: elasticsearch-rest-certs
       existingCertSecretCertSubPath: tls.crt  # elk-rest-crt.pem
       existingCertSecretKeySubPath: tls.key   # elk-rest-key.pem
-      existingCertSecretRootCASubPath: tls.crt # elk-rest-root-ca.pem
+      existingCertSecretRootCASubPath: ca.crt # elk-rest-root-ca.pem
     admin:
       enabled: true
       existingCertSecret: elasticsearch-admin-certs
       existingCertSecretCertSubPath: tls.crt  # admin-crt.pem
       existingCertSecretKeySubPath: tls.key   # admin-key.pem
-      existingCertSecretRootCASubPath: tls.crt # admin-root-ca.pem
+      existingCertSecretRootCASubPath: ca.crt # admin-root-ca.pem
 
   config:
     cluster:
@@ -200,7 +200,6 @@ elasticsearch:
     - 'CN=elasticsearch*'
     - '/CN=.*regex/'
     opendistro_security.nodes_dn:
-    - 'CN=elastic.example.com'
     - 'CN=*.elasticsearch.svc.cluster.local,OU=example unit,O=example org.,C=KR'
     - 'CN=*.elasticsearch'
     - 'CN=*.elasticsearch.svc'

@@ -1,0 +1,22 @@
+#/bin/bash
+
+NAMESPACE="elasticsearch"
+kubectl create -n ${NAMESPACE}
+
+kubectl -n ${NAMESPACE} create secret generic kibanaserver-user \
+  --from-literal=username=kibanaserver \
+  --from-literal=password=kibanaserver \
+  --from-literal=cookie="$(date +%s | sha256sum | head -c 128; echo)"
+
+kubectl -n ${NAMESPACE} apply -f opendistro-es-user.yaml
+kubectl -n ${NAMESPACE} apply -f opendistro-es-tls.yaml
+
+RELEASE_NAME="elasticsearch"
+helm install ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
+  --namespace=${NAMESPACE} \
+  --values=opendistro-es.yaml \
+  --values=opendistro-kibana.yaml \
+  --set kibana.extraEnvs\[0\].name="ELASTICSEARCH_HOSTS" \
+  --set kibana.extraEnvs\[0\].value="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
+
+# "$@"

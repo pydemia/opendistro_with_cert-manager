@@ -152,7 +152,7 @@ elasticsearch:
       existingCertSecret: elasticsearch-rest-certs
       existingCertSecretCertSubPath: tls.crt  # It mounts as elk-rest-crt.pem
       existingCertSecretKeySubPath: tls.key   # It mounts as elk-rest-key.pem
-      existingCertSecretRootCASubPath: ca.crt # It mounts as elk-rest-root-ca.pem
+      existingCertSecretRootCASubPath: tls.crt # It mounts as elk-rest-root-ca.pem
     admin:
       enabled: true
       existingCertSecret: elasticsearch-admin-certs
@@ -209,7 +209,7 @@ elasticsearch:
       existingCertSecret: elasticsearch-rest-certs
       existingCertSecretCertSubPath: tls.crt  # It mounts as elk-rest-crt.pem
       existingCertSecretKeySubPath: tls.key   # It mounts as elk-rest-key.pem
-      existingCertSecretRootCASubPath: ca.crt # It mounts as elk-rest-root-ca.pem
+      existingCertSecretRootCASubPath: tls.crt # It mounts as elk-rest-root-ca.pem
     admin:
       enabled: true
       existingCertSecret: elasticsearch-admin-certs
@@ -303,13 +303,13 @@ kibana:
       existingCertSecret: kibana-certs
       existingCertSecretCertSubPath: tls.crt  # kibana-crt.pem
       existingCertSecretKeySubPath: tls.key   # kibana-key.pem
-      existingCertSecretRootCASubPath: ca.crt # kibana-root-ca.pem
+      existingCertSecretRootCASubPath: tls.crt # kibana-root-ca.pem
     elasticsearch:
       enabled: true
       existingCertSecret: elasticsearch-rest-certs
       existingCertSecretCertSubPath: tls.crt  # elk-rest-crt.pem
       existingCertSecretKeySubPath: tls.key   # elk-rest-key.pem
-      existingCertSecretRootCASubPath: ca.crt # elk-rest-root-ca.pem
+      existingCertSecretRootCASubPath: tls.crt # elk-rest-root-ca.pem
 
   certsDirectory: "/usr/share/kibana/certs"
 ```
