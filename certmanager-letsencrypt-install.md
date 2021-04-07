@@ -114,8 +114,8 @@ kibanaserver-user               Opaque                                3      83s
 RELEASE_NAME="elasticsearch"
 helm install ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
   --namespace=${NAMESPACE} \
-  --values=opendistro-es-selfsigned.yaml \
-  --values=opendistro-kibana-selfsigned.yaml \
+  --values=opendistro-es.yaml \
+  --values=opendistro-kibana.yaml \
   --set kibana.extraEnvs\[0\].name="ELASTICSEARCH_HOSTS" \
   --set kibana.extraEnvs\[0\].value="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
 
@@ -126,8 +126,8 @@ helm install ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
 RELEASE_NAME="elasticsearch"
 helm upgrade ${RELEASE_NAME} opendistro-es-1.13.0.tgz \
   --namespace=${NAMESPACE} \
-  --values=opendistro-es-selfsigned.yaml \
-  --values=opendistro-kibana-selfsigned.yaml \
+  --values=opendistro-es.yaml \
+  --values=opendistro-kibana.yaml \
   --set kibana.extraEnvs\[0\].name="ELASTICSEARCH_HOSTS" \
   --set kibana.extraEnvs\[0\].value="https://${RELEASE_NAME}-opendistro-es-client-service:9200"
 ```

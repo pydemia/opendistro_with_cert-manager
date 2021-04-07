@@ -1,18 +1,18 @@
 apiVersion: cert-manager.io/v1  # >= v0.11
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-prd
   # namespace: istio-system  # It will be ignored when clusterissuer, which is cross-namespaced.
 spec:
   acme:
-    email: ${YOUR_EMAL_HERE}
+    email: yj.kim1@sk.com
     server: https://acme-v02.api.letsencrypt.org/directory
     preferredChain: "ISRG Root X1"
     privateKeySecretRef:
       name: letsencrypt-prd-pkey
     solvers:
     - selector: {}
-      # http01:
-      #   ingress:
-      #     class: nginx
+      http01:
+        ingress:
+          class: nginx
 ---

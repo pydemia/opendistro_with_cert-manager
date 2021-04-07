@@ -41,14 +41,15 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
-  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -109,14 +110,15 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
-  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -158,14 +160,15 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
-  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
+  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
+  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -182,7 +185,7 @@ spec:
   secretName: elasticsearch-rest-certs
   # commonName: elasticsearch.svc.cluster.local
   dnsNames:
-  - 'es.airuntime.com'
+  - 'es.example.com'
   privateKey:
     encoding: PKCS8
     size: 2048
@@ -202,13 +205,13 @@ spec:
   secretName: kibana-certs
   # commonName: elasticsearch.svc.cluster.local
   dnsNames:
-  - 'kibana.airuntime.com'
+  - 'kibana.example.com'
   privateKey:
     encoding: PKCS8
     size: 2048
   issuerRef:
     name: letsencrypt-prd
-    kind: ClusterIssuer
+    kind: Issuer
 ---
 # # Resources below is to clean-up secrets easily
 # # when you delete certificates with `kubectl delete -f <this-file>`.

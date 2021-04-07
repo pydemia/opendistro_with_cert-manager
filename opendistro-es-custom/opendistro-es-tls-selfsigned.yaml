@@ -41,15 +41,14 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
+  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
-  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
-  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -110,15 +109,14 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
+  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
-  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
-  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -159,15 +157,14 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
+  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
-  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
-  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -208,15 +205,14 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
+  - elasticsearch
   - elasticsearch.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
-  - "*.svc.cluster.local"
   - elasticsearch-opendistro-es-client-service
   - elasticsearch-opendistro-es-data-svc
   - elasticsearch-opendistro-es-discovery
-  - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
   issuerRef:
@@ -257,14 +253,11 @@ spec:
     encoding: PKCS8
     size: 2048
   dnsNames:
-  - elasticsearch.svc.cluster.local
+  - kibana
+  - kibana.svc.cluster.local
   - "*.elasticsearch.svc.cluster.local"
   - "*.elasticsearch"
   - "*.elasticsearch.svc"
-  - "*.svc.cluster.local"
-  - elasticsearch-opendistro-es-client-service
-  - elasticsearch-opendistro-es-data-svc
-  - elasticsearch-opendistro-es-discovery
   - elasticsearch-opendistro-es-kibana-svc
   - "*.example.com"
   # Issuer references are always required.
